@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    Your Mental Health Journey, Powered by AI
+                </h1>
+                <p class="lead mb-4">
+                    MindCare is an AI-powered mental health journal that helps you track your emotions, 
+                    understand your mood patterns, and support your wellness journey.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <div class="feature-item">
+                        <i data-feather="brain" class="me-2"></i>
+                        AI Mood Analysis
+                    </div>
+                    <div class="feature-item">
+                        <i data-feather="trending-up" class="me-2"></i>
+                        Mood Tracking
+                    </div>
+                    <div class="feature-item">
+                        <i data-feather="shield" class="me-2"></i>
+                        Private & Secure
+                    </div>
+                </div>
+                <a href="{{ url_for('replit_auth.login') }}" class="btn btn-light btn-lg px-4 py-3">
+                    <i data-feather="log-in" class="me-2"></i>
+                    Start Your Journey
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-illustration">
+                    <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Simple illustration of a person with thought bubbles -->
+                        <circle cx="200" cy="150" r="80" fill="#E3F2FD" opacity="0.7"/>
+                        <circle cx="200" cy="140" r="40" fill="#2196F3" opacity="0.3"/>
+                        <circle cx="150" cy="100" r="25" fill="#4CAF50" opacity="0.4"/>
+                        <circle cx="250" cy="80" r="20" fill="#FF9800" opacity="0.4"/>
+                        <circle cx="300" cy="120" r="15" fill="#9C27B0" opacity="0.4"/>
+                        <path d="M160 150 Q180 130 200 150 Q220 130 240 150" stroke="#2196F3" stroke-width="3" fill="none"/>
+                        <text x="200" y="260" text-anchor="middle" fill="white" font-size="16" opacity="0.8">Mental Wellness</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Supporting SDG 3: Good Health and Well-Being</h2>
+            <p class="text-muted">Comprehensive mental health tools designed for your wellness</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i data-feather="edit-3" class="text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Daily Journaling</h5>
+                    <p class="text-muted">
+                        Write your thoughts and feelings in a safe, private space designed for reflection and growth.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i data-feather="brain" class="text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">AI Mood Analysis</h5>
+                    <p class="text-muted">
+                        Advanced AI analyzes your entries to provide insights into your emotional patterns and well-being.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i data-feather="bar-chart-2" class="text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Mood Visualization</h5>
+                    <p class="text-muted">
+                        Beautiful charts and graphs help you understand your emotional journey over time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Why Choose MindCare?</h3>
+                <div class="benefits-list">
+                    <div class="benefit-item d-flex mb-3">
+                        <i data-feather="check-circle" class="text-success me-3 mt-1"></i>
+                        <div>
+                            <strong>Evidence-Based Approach</strong>
+                            <p class="text-muted mb-0">Built on proven mental health practices and research</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item d-flex mb-3">
+                        <i data-feather="lock" class="text-success me-3 mt-1"></i>
+                        <div>
+                            <strong>Complete Privacy</strong>
+                            <p class="text-muted mb-0">Your journal entries are encrypted and completely private</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item d-flex mb-3">
+                        <i data-feather="trending-up" class="text-success me-3 mt-1"></i>
+                        <div>
+                            <strong>Track Progress</strong>
+                            <p class="text-muted mb-0">See your emotional growth and patterns over time</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item d-flex mb-3">
+                        <i data-feather="smartphone" class="text-success me-3 mt-1"></i>
+                        <div>
+                            <strong>Accessible Anywhere</strong>
+                            <p class="text-muted mb-0">Access your journal from any device, anytime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="illustration">
+                    <svg width="350" height="250" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Growth chart illustration -->
+                        <rect x="50" y="50" width="250" height="150" fill="#F8F9FA" stroke="#E9ECEF" stroke-width="2" rx="8"/>
+                        <path d="M70 170 L100 150 L130 120 L160 140 L190 100 L220 110 L250 80" stroke="#4CAF50" stroke-width="4" fill="none"/>
+                        <circle cx="70" cy="170" r="4" fill="#4CAF50"/>
+                        <circle cx="100" cy="150" r="4" fill="#4CAF50"/>
+                        <circle cx="130" cy="120" r="4" fill="#4CAF50"/>
+                        <circle cx="160" cy="140" r="4" fill="#4CAF50"/>
+                        <circle cx="190" cy="100" r="4" fill="#4CAF50"/>
+                        <circle cx="220" cy="110" r="4" fill="#4CAF50"/>
+                        <circle cx="250" cy="80" r="4" fill="#4CAF50"/>
+                        <text x="175" y="230" text-anchor="middle" fill="#6C757D" font-size="14">Mood Progress Over Time</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-3">Ready to Start Your Mental Wellness Journey?</h3>
+        <p class="lead mb-4">Join thousands of users who are taking control of their mental health with MindCare.</p>
+        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-light btn-lg px-5 py-3">
+            <i data-feather="heart" class="me-2"></i>
+            Begin Today - It's Free
+        </a>
+    </div>
+</section>
+{% endblock %}

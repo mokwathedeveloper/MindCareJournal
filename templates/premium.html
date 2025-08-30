@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}Premium Features - MindCare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold mb-3">
+                <i data-feather="star" class="me-3 text-warning"></i>
+                MindCare Premium
+            </h1>
+            <p class="lead text-muted">
+                Unlock advanced mental health tools and professional support for your wellness journey
+            </p>
+        </div>
+
+        <!-- Current Plan Status -->
+        {% if subscription %}
+        <div class="card border-success shadow-sm mb-5">
+            <div class="card-body text-center">
+                <i data-feather="check-circle" class="text-success mb-3" style="width: 48px; height: 48px;"></i>
+                <h4 class="text-success fw-bold">Premium Active</h4>
+                <p class="mb-0">
+                    Your {{ subscription.subscription_type.replace('_', ' ').title() }} subscription is active
+                    {% if subscription.expires_at %}
+                    until {{ subscription.expires_at.strftime('%B %d, %Y') }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Premium Plans -->
+        <div class="row g-4 mb-5">
+            <!-- Basic Premium -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100 {% if not subscription %}border-primary{% endif %}">
+                    <div class="card-header bg-white text-center py-4">
+                        <i data-feather="star" class="text-primary mb-3" style="width: 48px; height: 48px;"></i>
+                        <h3 class="fw-bold">Premium</h3>
+                        <div class="price">
+                            <span class="display-4 fw-bold text-primary">$9.99</span>
+                            <span class="text-muted">/month</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Advanced mood analytics and insights
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Detailed emotion tracking reports
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Export your journal data (PDF, CSV)
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                AI-powered mood predictions
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Customizable mood tracking goals
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Priority customer support
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-white text-center">
+                        {% if not subscription or subscription.subscription_type != 'premium' %}
+                        <button class="btn btn-primary btn-lg w-100" onclick="upgradeToPremium()">
+                            <i data-feather="credit-card" class="me-2"></i>
+                            Upgrade to Premium
+                        </button>
+                        {% else %}
+                        <button class="btn btn-success btn-lg w-100" disabled>
+                            <i data-feather="check" class="me-2"></i>
+                            Current Plan
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Therapist Access -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100 border-warning">
+                    <div class="card-header bg-white text-center py-4">
+                        <i data-feather="users" class="text-warning mb-3" style="width: 48px; height: 48px;"></i>
+                        <h3 class="fw-bold">Therapist Access</h3>
+                        <div class="price">
+                            <span class="display-4 fw-bold text-warning">$49.99</span>
+                            <span class="text-muted">/month</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Everything in Premium
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Monthly video sessions with licensed therapists
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Professional analysis of your mood patterns
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Personalized therapy recommendations
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Crisis support and emergency resources
+                            </li>
+                            <li class="mb-3">
+                                <i data-feather="check" class="text-success me-2"></i>
+                                Secure messaging with your therapist
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-white text-center">
+                        {% if not subscription or subscription.subscription_type != 'therapist_access' %}
+                        <button class="btn btn-warning btn-lg w-100" onclick="upgradeToTherapist()">
+                            <i data-feather="heart" class="me-2"></i>
+                            Get Therapist Access
+                        </button>
+                        {% else %}
+                        <button class="btn btn-success btn-lg w-100" disabled>
+                            <i data-feather="check" class="me-2"></i>
+                            Current Plan
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Feature Comparison</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th class="text-center">Free</th>
+                                <th class="text-center">Premium</th>
+                                <th class="text-center">Therapist Access</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Journal Entries</td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Basic Mood Analysis</td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mood Trends</td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Advanced Analytics</td>
+                                <td class="text-center">
+                                    <i data-feather="x" class="text-danger"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Data Export</td>
+                                <td class="text-center">
+                                    <i data-feather="x" class="text-danger"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Professional Therapy</td>
+                                <td class="text-center">
+                                    <i data-feather="x" class="text-danger"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="x" class="text-danger"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i data-feather="check" class="text-success"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support SDG 3 -->
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body text-center py-5">
+                <i data-feather="heart" class="text-primary mb-3" style="width: 64px; height: 64px;"></i>
+                <h4 class="fw-bold mb-3">Supporting Global Mental Health</h4>
+                <p class="text-muted mb-4">
+                    Your premium subscription helps us support SDG 3: Good Health and Well-Being by funding 
+                    mental health resources for underserved communities worldwide.
+                </p>
+                <div class="row g-3 justify-content-center">
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h5 class="fw-bold text-primary">10,000+</h5>
+                            <small class="text-muted">People Helped</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h5 class="fw-bold text-success">50+</h5>
+                            <small class="text-muted">Countries Reached</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h5 class="fw-bold text-warning">$500K+</h5>
+                            <small class="text-muted">Donated to Mental Health</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Secure Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                    <p class="mt-3">Redirecting to secure payment...</p>
+                    <small class="text-muted">This feature will be integrated with IntaSend payment processing.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function upgradeToPremium() {
+    showPaymentModal('Premium Plan - $9.99/month');
+}
+
+function upgradeToTherapist() {
+    showPaymentModal('Therapist Access - $49.99/month');
+}
+
+function showPaymentModal(planName) {
+    const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+    modal.show();
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        modal.hide();
+        // In a real application, this would redirect to IntaSend payment gateway
+        alert('This would redirect to IntaSend payment processing for: ' + planName);
+    }, 3000);
+}
+
+// Initialize tooltips for feature comparison
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

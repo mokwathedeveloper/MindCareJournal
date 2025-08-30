@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Entry - MindCare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">
+                        <i data-feather="edit" class="me-2"></i>
+                        Edit Journal Entry
+                    </h4>
+                    <small class="text-muted">
+                        Created on {{ entry.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </small>
+                </div>
+                <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="btn btn-outline-secondary">
+                    <i data-feather="eye" class="me-1"></i>
+                    View Entry
+                </a>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="title" class="form-label fw-semibold">Entry Title</label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="title" 
+                               name="title" 
+                               value="{{ entry.title }}"
+                               required>
+                        <div class="invalid-feedback">
+                            Please provide a title for your entry.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="content" class="form-label fw-semibold">Your Thoughts</label>
+                        <textarea class="form-control" 
+                                  id="content" 
+                                  name="content" 
+                                  rows="12" 
+                                  required>{{ entry.content }}</textarea>
+                        <div class="form-text">
+                            <i data-feather="info" class="me-1"></i>
+                            Your updated entry will be re-analyzed by AI to update your mood tracking.
+                        </div>
+                        <div class="invalid-feedback">
+                            Please write something in your journal entry.
+                        </div>
+                    </div>
+
+                    {% if entry.mood_score %}
+                    <div class="mb-4">
+                        <div class="alert alert-info">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <strong>Current Mood Analysis:</strong><br>
+                                    <span class="badge mood-badge mood-{{ entry.mood_score|int }} me-2">
+                                        {{ entry.mood_score }}/5
+                                    </span>
+                                    Confidence: {{ "%.0f"|format(entry.confidence * 100) }}%
+                                </div>
+                                <div class="col-md-6">
+                                    {% if entry.emotions %}
+                                    <small>
+                                        <strong>Top emotions:</strong>
+                                        {% set sorted_emotions = entry.emotions.items()|list|sort(attribute=1, reverse=True) %}
+                                        {% for emotion, value in sorted_emotions[:3] if value > 0 %}
+                                            {{ emotion.title() }} ({{ "%.0f"|format(value) }}%){% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <small>
+                                <i data-feather="clock" class="me-1"></i>
+                                Last updated: {{ entry.updated_at.strftime('%B %d, %Y at %I:%M %p') }}
+                            </small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="btn btn-secondary me-2">
+                                <i data-feather="x" class="me-1"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i data-feather="save" class="me-2"></i>
+                                Update Entry
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Entry -->
+        <div class="card border-0 shadow-sm mt-4 border-danger">
+            <div class="card-body">
+                <h6 class="text-danger fw-semibold mb-3">
+                    <i data-feather="trash-2" class="me-2"></i>
+                    Delete Entry
+                </h6>
+                <p class="text-muted mb-3">
+                    Once you delete this entry, it cannot be recovered. All associated mood data will also be permanently removed.
+                </p>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i data-feather="trash-2" class="me-2"></i>
+                    Delete This Entry
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i data-feather="alert-triangle" class="me-2 text-danger"></i>
+                    Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Are you sure you want to delete this journal entry?</p>
+                <div class="alert alert-warning">
+                    <strong>Title:</strong> {{ entry.title }}<br>
+                    <strong>Date:</strong> {{ entry.created_at.strftime('%B %d, %Y') }}
+                </div>
+                <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('delete_entry', entry_id=entry.id) }}" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i data-feather="trash-2" class="me-2"></i>
+                        Delete Entry
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Initialize feather icons in modal
+document.getElementById('deleteModal').addEventListener('shown.bs.modal', function () {
+    feather.replace();
+});
+</script>
+{% endblock %}

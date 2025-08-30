@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Mood Trends - MindCare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Page Header -->
+    <div class="col-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1">Mood Trends & Analytics</h2>
+                <p class="text-muted mb-0">Understand your emotional patterns over time</p>
+            </div>
+            <a href="{{ url_for('new_entry') }}" class="btn btn-primary">
+                <i data-feather="plus" class="me-2"></i>
+                New Entry
+            </a>
+        </div>
+    </div>
+
+    {% if entries %}
+    <!-- Main Mood Chart -->
+    <div class="col-12 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i data-feather="trending-up" class="me-2"></i>
+                    Mood Over Time
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="moodTrendChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="col-md-3 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="stat-icon mb-3">
+                    <i data-feather="bar-chart" class="text-primary"></i>
+                </div>
+                <h3 class="fw-bold text-primary">{{ "%.1f"|format(entries|map(attribute='mood_score')|sum / entries|length) }}</h3>
+                <p class="text-muted mb-0">Average Mood</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="stat-icon mb-3">
+                    <i data-feather="arrow-up" class="text-success"></i>
+                </div>
+                <h3 class="fw-bold text-success">{{ entries|map(attribute='mood_score')|max }}</h3>
+                <p class="text-muted mb-0">Highest Mood</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="stat-icon mb-3">
+                    <i data-feather="calendar" class="text-info"></i>
+                </div>
+                <h3 class="fw-bold text-info">{{ entries|length }}</h3>
+                <p class="text-muted mb-0">Total Entries</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="stat-icon mb-3">
+                    <i data-feather="zap" class="text-warning"></i>
+                </div>
+                <h3 class="fw-bold text-warning">{{ "%.0f"|format((entries|map(attribute='confidence')|sum / entries|length) * 100) }}%</h3>
+                <p class="text-muted mb-0">Avg Confidence</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Insights -->
+    {% if insights %}
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i data-feather="brain" class="me-2"></i>
+                    AI Insights
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="insights-content mb-3">
+                    <p class="mb-0">{{ insights.insights }}</p>
+                </div>
+                
+                {% if insights.recommendations %}
+                <h6 class="fw-semibold mt-3 mb-2">Personalized Recommendations:</h6>
+                <ul class="list-unstyled">
+                    {% for recommendation in insights.recommendations %}
+                    <li class="mb-1">
+                        <i data-feather="check-circle" class="text-success me-2"></i>
+                        {{ recommendation }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Emotions Chart -->
+    <div class="col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i data-feather="smile" class="me-2"></i>
+                    Emotion Breakdown
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="emotionChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Entries with Mood -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i data-feather="list" class="me-2"></i>
+                    Recent Entries with Mood Data
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Mood Score</th>
+                                <th>Confidence</th>
+                                <th>Top Emotions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in entries[-10:] %}
+                            <tr>
+                                <td>{{ entry.created_at.strftime('%m/%d/%Y') }}</td>
+                                <td>
+                                    <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="text-decoration-none">
+                                        {{ entry.title[:40] }}{% if entry.title|length > 40 %}...{% endif %}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge mood-badge mood-{{ entry.mood_score|int }}">
+                                        {{ entry.mood_score }}/5
+                                    </span>
+                                </td>
+                                <td>{{ "%.0f"|format(entry.confidence * 100) }}%</td>
+                                <td>
+                                    {% if entry.emotions %}
+                                        {% set sorted_emotions = entry.emotions.items()|list|sort(attribute=1, reverse=True) %}
+                                        {% for emotion, value in sorted_emotions[:2] if value > 10 %}
+                                            <small class="badge bg-light text-dark me-1">
+                                                {{ emotion.title() }} {{ "%.0f"|format(value) }}%
+                                            </small>
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i data-feather="eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i data-feather="trending-up" class="text-muted mb-4" style="width: 64px; height: 64px;"></i>
+                <h4 class="text-muted mb-3">No Mood Data Yet</h4>
+                <p class="text-muted mb-4">
+                    Start writing journal entries to see your mood trends and get AI-powered insights.
+                </p>
+                <a href="{{ url_for('new_entry') }}" class="btn btn-primary btn-lg">
+                    <i data-feather="edit-3" class="me-2"></i>
+                    Write Your First Entry
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if entries %}
+<script src="{{ url_for('static', filename='js/mood-chart.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mood Trend Chart
+    const moodCtx = document.getElementById('moodTrendChart').getContext('2d');
+    const moodData = {
+        labels: [
+            {% for entry in entries %}
+            '{{ entry.created_at.strftime("%m/%d") }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Mood Score',
+            data: [
+                {% for entry in entries %}
+                {{ entry.mood_score }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            borderColor: '#2196F3',
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#2196F3',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+        }]
+    };
+
+    new Chart(moodCtx, {
+        type: 'line',
+        data: moodData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Your Mood Journey'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            const labels = ['', 'Very Low', 'Low', 'Neutral', 'Good', 'Excellent'];
+                            return labels[value];
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+
+    // Emotion Chart
+    const emotionCtx = document.getElementById('emotionChart').getContext('2d');
+    
+    // Aggregate emotions across all entries
+    const emotionTotals = {};
+    {% for entry in entries %}
+        {% if entry.emotions %}
+            {% for emotion, value in entry.emotions.items() %}
+                {% if value > 0 %}
+                if (!emotionTotals['{{ emotion }}']) emotionTotals['{{ emotion }}'] = 0;
+                emotionTotals['{{ emotion }}'] += {{ value }};
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    const emotionLabels = Object.keys(emotionTotals);
+    const emotionValues = Object.values(emotionTotals);
+    
+    const emotionColors = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+        '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'
+    ];
+
+    new Chart(emotionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: emotionLabels.map(label => label.charAt(0).toUpperCase() + label.slice(1)),
+            datasets: [{
+                data: emotionValues,
+                backgroundColor: emotionColors.slice(0, emotionLabels.length),
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

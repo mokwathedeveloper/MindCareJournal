@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}New Entry - MindCare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">
+                    <i data-feather="edit-3" class="me-2"></i>
+                    New Journal Entry
+                </h4>
+                <small class="text-muted">Take a moment to reflect on your thoughts and feelings</small>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="title" class="form-label fw-semibold">Entry Title</label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="title" 
+                               name="title" 
+                               value="{{ title or '' }}"
+                               placeholder="How are you feeling today?"
+                               required>
+                        <div class="invalid-feedback">
+                            Please provide a title for your entry.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="content" class="form-label fw-semibold">Your Thoughts</label>
+                        <textarea class="form-control" 
+                                  id="content" 
+                                  name="content" 
+                                  rows="12" 
+                                  placeholder="Write about your day, your feelings, thoughts, or anything that's on your mind. This is your safe space..."
+                                  required>{{ content or '' }}</textarea>
+                        <div class="form-text">
+                            <i data-feather="info" class="me-1"></i>
+                            Your entry will be analyzed by AI to help track your mood patterns. All data is kept private and secure.
+                        </div>
+                        <div class="invalid-feedback">
+                            Please write something in your journal entry.
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <small>
+                                <i data-feather="shield" class="me-1"></i>
+                                Your entries are private and encrypted
+                            </small>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-2">
+                                <i data-feather="x" class="me-1"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i data-feather="save" class="me-2"></i>
+                                Save Entry
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Writing Tips -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body">
+                <h6 class="fw-semibold mb-3">
+                    <i data-feather="lightbulb" class="me-2"></i>
+                    Writing Tips for Better Mental Health
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="tip-item">
+                            <strong>Be Honest:</strong> Write authentically about your feelings, both positive and negative.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tip-item">
+                            <strong>No Judgment:</strong> This is your space - there's no right or wrong way to feel.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tip-item">
+                            <strong>Be Specific:</strong> Include details about events, people, or situations that affected you.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="tip-item">
+                            <strong>Look Forward:</strong> Consider what you hope for or plan to do differently.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Auto-save draft functionality
+let autoSaveTimeout;
+const titleInput = document.getElementById('title');
+const contentTextarea = document.getElementById('content');
+
+function autoSave() {
+    const title = titleInput.value;
+    const content = contentTextarea.value;
+    
+    if (title || content) {
+        localStorage.setItem('journal_draft', JSON.stringify({
+            title: title,
+            content: content,
+            timestamp: Date.now()
+        }));
+    }
+}
+
+function loadDraft() {
+    const draft = localStorage.getItem('journal_draft');
+    if (draft) {
+        const draftData = JSON.parse(draft);
+        const hoursSinceDraft = (Date.now() - draftData.timestamp) / (1000 * 60 * 60);
+        
+        // Only load draft if it's less than 24 hours old and fields are empty
+        if (hoursSinceDraft < 24 && !titleInput.value && !contentTextarea.value) {
+            if (confirm('Would you like to restore your previous draft?')) {
+                titleInput.value = draftData.title;
+                contentTextarea.value = draftData.content;
+            }
+        }
+    }
+}
+
+// Load draft on page load
+document.addEventListener('DOMContentLoaded', loadDraft);
+
+// Auto-save on input
+[titleInput, contentTextarea].forEach(element => {
+    element.addEventListener('input', function() {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(autoSave, 2000); // Save after 2 seconds of inactivity
+    });
+});
+
+// Clear draft on successful submit
+document.querySelector('form').addEventListener('submit', function() {
+    localStorage.removeItem('journal_draft');
+});
+</script>
+{% endblock %}
