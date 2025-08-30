@@ -1,0 +1,67 @@
+Build a project called “MindCare – AI-Powered Mental Health Journal” that supports SDG 3: Good Health and Well-Being.
+
+Requirements (must strictly follow):
+
+Tech Stack:
+
+Frontend: HTML5, CSS, JavaScript (form for journal input + Chart.js for visualization)
+
+Backend: Python (Flask)
+
+Database: MySQL (store journal entries + emotion results)
+
+AI: Hugging Face Sentiment Analysis API (for mood detection, no ML coding)
+
+Payments: Integrate IntaSend for monetization (premium features, donations, or therapist subscription plans)
+
+How it Should Work:
+
+User writes a daily journal entry in a simple HTML form.
+
+Flask backend sends the text to the Hugging Face Sentiment Analysis API and retrieves emotions (e.g., happy: 72%, sad: 18%).
+
+The results are stored in MySQL along with the user’s journal entry.
+
+The frontend uses Chart.js to show the user’s mood trends over time (line or bar chart).
+
+Add CRUD functionality (users can view, edit, delete entries).
+
+Add IntaSend integration for monetization (e.g., premium feature: advanced mood reports, or therapist support access).
+
+Deliverables:
+
+Clean, well-documented code.
+
+README file with:
+
+Team members’ names, roles, and emails.
+
+Setup instructions (how to run Flask + MySQL locally).
+
+API usage documentation (Hugging Face + IntaSend).
+
+Testing: Ensure CRUD works, emotions are stored correctly, and chart updates dynamically.
+
+Hackathon Judging Alignment:
+
+Code Quality (20%) → Clean Flask routes, organized JS, SQL schema well-structured.
+
+Algorithm Efficiency (20%) → Efficient API calls, optimized queries.
+
+Tech Utilization (14%) → Proper integration of Hugging Face, Chart.js, IntaSend.
+
+Security (12%) → Basic validation + error handling for API/DB.
+
+Performance (16%) → Responsive frontend and optimized backend queries.
+
+Development Process (10%) → Collaborative README with roles.
+
+Documentation & Testing (8%) → Clear instructions and working tests.
+
+⚡ This prompt ensures Replit AI won’t hallucinate because it:
+
+Clearly defines the problem (mental health support)
+
+Strictly enforces the tech stack
+
+Maps directly to hackathon judging criteria
