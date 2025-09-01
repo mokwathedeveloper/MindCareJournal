@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - MindCare{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="flex justify-center">
+                <span class="material-symbols-outlined text-blue-500 text-6xl">favorite</span>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Welcome Back
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Sign in to continue your wellness journey
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    {{ form.username_or_email.label(class="sr-only") }}
+                    {{ form.username_or_email(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Username or Email") }}
+                    {% if form.username_or_email.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.username_or_email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ form.password.label(class="sr-only") }}
+                    <div class="relative">
+                        {{ form.password(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Password", id="password") }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onclick="togglePassword()">
+                            <span class="material-symbols-outlined" id="toggleIcon">visibility</span>
+                        </button>
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    {{ form.remember_me(class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded") }}
+                    {{ form.remember_me.label(class="ml-2 block text-sm text-gray-900") }}
+                </div>
+
+                <div class="text-sm">
+                    <a href="{{ url_for('auth.forgot_password') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                        Forgot your password?
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                {{ form.submit(class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500") }}
+            </div>
+        </form>
+        <div class="text-sm text-center">
+            <p class="text-gray-600">Don't have an account?
+                <a href="{{ url_for('auth.register') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                    Create an account
+                </a>
+            </p>
+        </div>
+        <div class="mt-4 p-3 bg-gray-100 rounded-md">
+            <small class="text-gray-600">
+                <strong>Demo Mode:</strong> You can create a new account or use these test credentials:
+                <br><strong>Username:</strong> demo
+                <br><strong>Password:</strong> password123
+            </small>
+        </div>
+        <div class="text-center text-sm text-gray-500">
+            <p>
+                By signing in, you agree to our
+                <a href="#" class="font-medium text-gray-900 hover:text-gray-700">Terms of Service</a> and
+                <a href="#" class="font-medium text-gray-900 hover:text-gray-700">Privacy Policy</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.textContent = 'visibility_off';
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.textContent = 'visibility';
+    }
+}
+
+// Auto-focus on first input
+document.addEventListener('DOMContentLoaded', function() {
+    const firstInput = document.querySelector('input[type="text"], input[type="email"]');
+    if (firstInput) {
+        firstInput.focus();
+    }
+});
+</script>
+{% endblock %}

@@ -1,114 +1,231 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MindCare - AI-Powered Mental Health Journal{% endblock %}</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Feather Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
-    {% block extra_head %}{% endblock %}
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{{ url_for('index') }}">
-                <i data-feather="heart" class="me-2"></i>MindCare
-            </a>
-            
-            {% if current_user.is_authenticated %}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            <i data-feather="home" class="me-1"></i>Dashboard
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="theme-color" content="#2196F3" />
+        <meta name="format-detection" content="telephone=no" />
+        <title>
+            {% block title %}MindCare - AI-Powered Mental Health Journal{%
+            endblock %}
+        </title>
+
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <!-- Google Icons -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+        <!-- Custom CSS -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/output.css') }}"
+        />
+        <!-- Custom Icons -->
+        <script src="{{ url_for('static', filename='js/icon-mappings.js') }}"></script>
+
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="bg-white shadow-md">
+            <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+                <a href="{{ url_for('index') }}" class="flex items-center">
+                    <span class="material-symbols-outlined text-blue-500 mr-2">analytics</span>
+                    <span class="font-bold text-xl text-blue-500 hidden sm:inline">MindCare</span>
+                    <span class="font-bold text-xl text-blue-500 inline sm:hidden">MC</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="flex items-center text-gray-600 hover:text-blue-500">
+                            <span class="material-symbols-outlined mr-2">home</span>
+                            <span>Dashboard</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('new_entry') }}">
-                            <i data-feather="edit-3" class="me-1"></i>New Entry
+                        <a href="{{ url_for('new_entry') }}" class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                            <span class="material-symbols-outlined mr-2">edit</span>
+                            <span>New Entry</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('mood_trends') }}">
-                            <i data-feather="trending-up" class="me-1"></i>Mood Trends
+                        <a href="{{ url_for('mood_trends') }}" class="flex items-center text-gray-600 hover:text-blue-500">
+                            <span class="material-symbols-outlined mr-2">trending_up</span>
+                            <span>Mood Trends</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('premium') }}">
-                            <i data-feather="star" class="me-1"></i>Premium
+                        <a href="{{ url_for('premium') }}" class="flex items-center text-gray-600 hover:text-blue-500">
+                            <span class="material-symbols-outlined mr-2">star</span>
+                            <span>Premium</span>
                         </a>
-                    </li>
-                </ul>
-                
-                <div class="navbar-nav">
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                            {% if current_user.profile_image_url %}
-                                <img src="{{ current_user.profile_image_url }}" alt="Profile" class="rounded-circle me-2" width="32" height="32" style="object-fit: cover;">
-                            {% else %}
-                                <i data-feather="user" class="me-2"></i>
-                            {% endif %}
-                            {{ current_user.first_name or 'User' }}
+                        <div class="relative">
+                            <button class="flex items-center text-gray-600 hover:text-blue-500 focus:outline-none">
+                                {% if current_user.profile_image_url %}
+                                <img
+                                    src="{{ current_user.profile_image_url }}"
+                                    alt="Profile"
+                                    class="w-8 h-8 rounded-full object-cover mr-2"
+                                />
+                                {% else %}
+                                <span class="material-symbols-outlined mr-2">person</span>
+                                {% endif %}
+                                <span class="hidden md:inline">{{ current_user.first_name or current_user.username or 'User' }}</span>
+                                <span class="inline md:hidden">{{ (current_user.first_name or current_user.username or 'User')[:1] }}</span>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 hidden">
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
+                                    <span class="material-symbols-outlined mr-2">person</span>
+                                    <span>Profile</span>
+                                </a>
+                                <a href="{{ url_for('premium') }}" class="block lg:hidden px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
+                                    <span class="material-symbols-outlined mr-2">star</span>
+                                    <span>Premium</span>
+                                </a>
+                                <a href="{{ url_for('auth.change_password') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
+                                    <span class="material-symbols-outlined mr-2">key</span>
+                                    <span>Change Password</span>
+                                </a>
+                                <hr class="my-1 border-gray-200">
+                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
+                                    <span class="material-symbols-outlined mr-2">logout</span>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                            <span class="material-symbols-outlined mr-2">login</span>
+                            <span>Login</span>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('replit_auth.logout') }}">
-                                <i data-feather="log-out" class="me-2"></i>Logout
-                            </a></li>
+                    {% endif %}
+                </div>
+                <div class="lg:hidden">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="lg:hidden hidden" id="navbarNav">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Dashboard</a>
+                        <a href="{{ url_for('new_entry') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">New Entry</a>
+                        <a href="{{ url_for('mood_trends') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Mood Trends</a>
+                        <a href="{{ url_for('premium') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Premium</a>
+                        <hr class="my-2 border-gray-200">
+                        <a href="{{ url_for('profile') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Profile</a>
+                        <a href="{{ url_for('auth.change_password') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Change Password</a>
+                        <a href="{{ url_for('auth.logout') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-blue-500">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div class="container mx-auto px-6 py-3">
+            {% for category, message in messages %}
+            <div
+                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                role="alert"
+            >
+                <span class="block sm:inline">{{ message }}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <!-- Main Content -->
+        <main
+            class="{% block main_class %}container-fluid px-3 py-3 py-md-4{% endblock %}"
+            id="main-content"
+        >
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Professional Footer -->
+        <footer class="bg-gray-800 text-white mt-auto">
+            <div class="container mx-auto px-6 pt-10 pb-6">
+                <div class="flex flex-wrap">
+                    <div class="w-full md:w-1/4 text-center md:text-left">
+                        <h5 class="uppercase mb-6 font-bold">Links</h5>
+                        <ul class="mb-4">
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">FAQ</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Help</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Support</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/4 text-center md:text-left">
+                        <h5 class="uppercase mb-6 font-bold">Legal</h5>
+                        <ul class="mb-4">
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Terms</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Privacy</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/4 text-center md:text-left">
+                        <h5 class="uppercase mb-6 font-bold">Social</h5>
+                        <ul class="mb-4">
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Facebook</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class_="hover:underline">Linkedin</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Twitter</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/4 text-center md:text-left">
+                        <h5 class="uppercase mb-6 font-bold">Company</h5>
+                        <ul class="mb-4">
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Official Blog</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">About Us</a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="#" class="hover:underline">Contact</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            {% endif %}
-        </div>
-    </nav>
+        </footer>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container mt-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Main Content -->
-    <main class="{% block main_class %}container my-4{% endblock %}">
-        {% block content %}{% endblock %}
-    </main>
+        <!-- Custom JS -->
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <!-- Footer -->
-    <footer class="bg-light mt-5 py-4">
-        <div class="container text-center text-muted">
-            <p>&copy; 2025 MindCare. Supporting SDG 3: Good Health and Well-Being.</p>
-            <small>AI-powered insights to support your mental wellness journey.</small>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Feather Icons -->
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
-    {% block extra_scripts %}{% endblock %}
-</body>
+        {% block extra_scripts %}{% endblock %}
+    </body>
 </html>

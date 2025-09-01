@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - MindCare{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="flex justify-center">
+                <span class="material-symbols-outlined text-blue-500 text-6xl">favorite</span>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Join MindCare
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Start your mental wellness journey today
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST" id="registrationForm">
+            {{ form.hidden_tag() }}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{ form.first_name.label(class="sr-only") }}
+                        {{ form.first_name(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="First Name") }}
+                        {% if form.first_name.errors %}
+                            <div class="text-red-500 text-xs italic">
+                                {% for error in form.first_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.last_name.label(class="sr-only") }}
+                        {{ form.last_name(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Last Name") }}
+                        {% if form.last_name.errors %}
+                            <div class="text-red-500 text-xs italic">
+                                {% for error in form.last_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    {{ form.username.label(class="sr-only") }}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">@</span>
+                        </div>
+                        {{ form.username(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm pl-7", placeholder="Username", id="username") }}
+                    </div>
+                    <small class="text-gray-500 text-xs">
+                        <span class="material-symbols-outlined text-xs">info</span>
+                        Only letters, numbers, and underscores allowed
+                    </small>
+                    {% if form.username.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.username.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ form.email.label(class="sr-only") }}
+                    {{ form.email(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Email address", type="email") }}
+                    <small class="text-gray-500 text-xs">
+                        <span class="material-symbols-outlined text-xs">mail</span>
+                        We'll never share your email with anyone else
+                    </small>
+                    {% if form.email.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ form.password.label(class="sr-only") }}
+                    <div class="relative">
+                        {{ form.password(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Password", id="password") }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onclick="togglePassword('password', 'toggleIcon1')">
+                            <span class="material-symbols-outlined" id="toggleIcon1">visibility</span>
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <div class="h-1 w-full bg-gray-200 rounded">
+                            <div id="strengthBar" class="h-1 rounded" style="width: 0%"></div>
+                        </div>
+                        <small id="strengthText" class="text-gray-500 text-xs">Password strength: </small>
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.password.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ form.password2.label(class="sr-only") }}
+                    <div class="relative">
+                        {{ form.password2(class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm", placeholder="Confirm Password", id="password2") }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5" onclick="togglePassword('password2', 'toggleIcon2')">
+                            <span class="material-symbols-outlined" id="toggleIcon2">visibility</span>
+                        </button>
+                    </div>
+                    <div id="passwordMatch" class="mt-1 text-xs"></div>
+                    {% if form.password2.errors %}
+                        <div class="text-red-500 text-xs italic">
+                            {% for error in form.password2.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex items-center">
+                <input id="agreeTerms" name="agreeTerms" type="checkbox" required class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="agreeTerms" class="ml-2 block text-sm text-gray-900">
+                    I agree to the
+                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Terms of Service</a>
+                    and
+                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                </label>
+            </div>
+
+            <div>
+                {{ form.submit(class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500", id="submitBtn") }}
+            </div>
+        </form>
+        <div class="text-sm text-center">
+            <p class="text-gray-600">Already have an account?
+                <a href="{{ url_for('auth.login') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                    Sign In
+                </a>
+            </p>
+        </div>
+        <div class="mt-4 p-3 bg-gray-100 rounded-md">
+            <h6 class="font-bold mb-2">What you'll get:</h6>
+            <ul class="space-y-1 text-sm text-gray-600">
+                <li class="flex items-center">
+                    <span class="material-symbols-outlined text-green-500 mr-2">check</span>
+                    AI-powered mood analysis
+                </li>
+                <li class="flex items-center">
+                    <span class="material-symbols-outlined text-green-500 mr-2">check</span>
+                    Personal mood tracking & insights
+                </li>
+                <li class="flex items-center">
+                    <span class="material-symbols-outlined text-green-500 mr-2">check</span>
+                    Secure & private journaling
+                </li>
+                <li class="flex items-center">
+                    <span class="material-symbols-outlined text-green-500 mr-2">check</span>
+                    Progress visualization
+                </li>
+            </ul>
+        </div>
+        <div class="text-center text-sm text-gray-500">
+            <p>
+                Join thousands of users improving their mental wellness with MindCare
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword(fieldId, iconId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(iconId);
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.textContent = 'visibility_off';
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.textContent = 'visibility';
+    }
+}
+
+function checkPasswordStrength(password) {
+    let strength = 0;
+    const checks = {
+        length: password.length >= 8,
+        lowercase: /[a-z]/.test(password),
+        uppercase: /[A-Z]/.test(password),
+        numbers: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+
+    strength = Object.values(checks).filter(Boolean).length;
+
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+
+    let color, text, percentage;
+
+    if (strength <= 1) {
+        color = 'bg-red-500';
+        text = 'Very Weak';
+        percentage = 20;
+    } else if (strength === 2) {
+        color = 'bg-yellow-500';
+        text = 'Weak';
+        percentage = 40;
+    } else if (strength === 3) {
+        color = 'bg-blue-500';
+        text = 'Fair';
+        percentage = 60;
+    } else if (strength === 4) {
+        color = 'bg-green-500';
+        text = 'Good';
+        percentage = 80;
+    } else {
+        color = 'bg-green-500';
+        text = 'Strong';
+        percentage = 100;
+    }
+
+    strengthBar.className = `h-1 rounded ${color}`;
+    strengthBar.style.width = `${percentage}%`;
+    strengthText.textContent = `Password strength: ${text}`;
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+    const matchDiv = document.getElementById('passwordMatch');
+
+    if (password2.length > 0) {
+        if (password === password2) {
+            matchDiv.innerHTML = '<small class="text-green-600 flex items-center"><span class="material-symbols-outlined text-xs mr-1">check_circle</span> Passwords match</small>';
+        } else {
+            matchDiv.innerHTML = '<small class="text-red-600 flex items-center"><span class="material-symbols-outlined text-xs mr-1">cancel</span> Passwords do not match</small>';
+        }
+    } else {
+        matchDiv.innerHTML = '';
+    }
+}
+
+function validateUsername(username) {
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    return usernameRegex.test(username);
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    const password2Field = document.getElementById('password2');
+    const usernameField = document.getElementById('username');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('registrationForm');
+
+    // Password strength checking
+    passwordField.addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+        checkPasswordMatch();
+    });
+
+    // Password matching
+    password2Field.addEventListener('input', checkPasswordMatch);
+
+    // Username validation
+    usernameField.addEventListener('input', function() {
+        const username = this.value;
+        if (username.length > 0) {
+            if (!validateUsername(username)) {
+                this.setCustomValidity('Username can only contain letters, numbers, and underscores');
+            } else {
+                this.setCustomValidity('');
+            }
+        }
+    });
+
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        const agreeTerms = document.getElementById('agreeTerms');
+        if (!agreeTerms.checked) {
+            e.preventDefault();
+            alert('Please agree to the Terms of Service and Privacy Policy to continue.');
+            return false;
+        }
+
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">...</svg>Creating Account...';
+    });
+
+    // Auto-focus on first input
+    const firstInput = document.querySelector('input[type="text"]');
+    if (firstInput) {
+        firstInput.focus();
+    }
+});
+</script>
+{% endblock %}

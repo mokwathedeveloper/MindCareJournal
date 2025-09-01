@@ -3,271 +3,219 @@
 {% block title %}Premium Features - MindCare{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-10">
+<div class="container mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto">
         <!-- Header -->
-        <div class="text-center mb-5">
-            <h1 class="fw-bold mb-3">
-                <i data-feather="star" class="me-3 text-warning"></i>
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+                <span class="material-symbols-outlined text-yellow-500 mr-3 text-4xl">workspace_premium</span>
                 MindCare Premium
             </h1>
-            <p class="lead text-muted">
+            <p class="text-lg text-gray-600">
                 Unlock advanced mental health tools and professional support for your wellness journey
             </p>
         </div>
 
         <!-- Current Plan Status -->
         {% if subscription %}
-        <div class="card border-success shadow-sm mb-5">
-            <div class="card-body text-center">
-                <i data-feather="check-circle" class="text-success mb-3" style="width: 48px; height: 48px;"></i>
-                <h4 class="text-success fw-bold">Premium Active</h4>
-                <p class="mb-0">
-                    Your {{ subscription.subscription_type.replace('_', ' ').title() }} subscription is active
-                    {% if subscription.expires_at %}
-                    until {{ subscription.expires_at.strftime('%B %d, %Y') }}
-                    {% endif %}
-                </p>
-            </div>
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg mb-12 text-center">
+            <span class="material-symbols-outlined text-5xl mb-2">verified</span>
+            <h4 class="text-2xl font-bold">Premium Active</h4>
+            <p>
+                Your {{ subscription.subscription_type.replace('_', ' ').title() }} subscription is active
+                {% if subscription.expires_at %}
+                until {{ subscription.expires_at.strftime('%B %d, %Y') }}
+                {% endif %}
+            </p>
         </div>
         {% endif %}
 
         <!-- Premium Plans -->
-        <div class="row g-4 mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <!-- Basic Premium -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 {% if not subscription %}border-primary{% endif %}">
-                    <div class="card-header bg-white text-center py-4">
-                        <i data-feather="star" class="text-primary mb-3" style="width: 48px; height: 48px;"></i>
-                        <h3 class="fw-bold">Premium</h3>
-                        <div class="price">
-                            <span class="display-4 fw-bold text-primary">$9.99</span>
-                            <span class="text-muted">/month</span>
-                        </div>
+            <div class="bg-white rounded-lg shadow-lg border-2 {% if not subscription %}border-blue-500{% else %}border-transparent{% endif %} flex flex-col">
+                <div class="p-6 text-center border-b">
+                    <span class="material-symbols-outlined text-blue-500 text-6xl mb-4">star</span>
+                    <h3 class="text-2xl font-bold text-gray-800">Premium</h3>
+                    <div class="mt-4">
+                        <span class="text-5xl font-bold text-gray-800">$9.99</span>
+                        <span class="text-gray-500">/month</span>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Advanced mood analytics and insights
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Detailed emotion tracking reports
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Export your journal data (PDF, CSV)
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                AI-powered mood predictions
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Customizable mood tracking goals
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Priority customer support
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-footer bg-white text-center">
-                        {% if not subscription or subscription.subscription_type != 'premium' %}
-                        <button class="btn btn-primary btn-lg w-100" onclick="upgradeToPremium()">
-                            <i data-feather="credit-card" class="me-2"></i>
-                            Upgrade to Premium
-                        </button>
-                        {% else %}
-                        <button class="btn btn-success btn-lg w-100" disabled>
-                            <i data-feather="check" class="me-2"></i>
-                            Current Plan
-                        </button>
-                        {% endif %}
-                    </div>
+                </div>
+                <div class="p-6 flex-grow">
+                    <ul class="space-y-4">
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Advanced mood analytics and insights</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Detailed emotion tracking reports</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Export your journal data (PDF, CSV)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>AI-powered mood predictions</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Customizable mood tracking goals</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Priority customer support</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-b-lg">
+                    {% if not subscription or subscription.subscription_type != 'premium' %}
+                    <button class="w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-600 flex items-center justify-center" onclick="upgradeToPremium()">
+                        <span class="material-symbols-outlined mr-2">credit_card</span>
+                        Upgrade to Premium
+                    </button>
+                    {% else %}
+                    <button class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center" disabled>
+                        <span class="material-symbols-outlined mr-2">check</span>
+                        Current Plan
+                    </button>
+                    {% endif %}
                 </div>
             </div>
 
             <!-- Therapist Access -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 border-warning">
-                    <div class="card-header bg-white text-center py-4">
-                        <i data-feather="users" class="text-warning mb-3" style="width: 48px; height: 48px;"></i>
-                        <h3 class="fw-bold">Therapist Access</h3>
-                        <div class="price">
-                            <span class="display-4 fw-bold text-warning">$49.99</span>
-                            <span class="text-muted">/month</span>
-                        </div>
+            <div class="bg-white rounded-lg shadow-lg border-2 border-yellow-500 flex flex-col">
+                <div class="p-6 text-center border-b">
+                    <span class="material-symbols-outlined text-yellow-500 text-6xl mb-4">group</span>
+                    <h3 class="text-2xl font-bold text-gray-800">Therapist Access</h3>
+                    <div class="mt-4">
+                        <span class="text-5xl font-bold text-gray-800">$49.99</span>
+                        <span class="text-gray-500">/month</span>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Everything in Premium
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Monthly video sessions with licensed therapists
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Professional analysis of your mood patterns
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Personalized therapy recommendations
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Crisis support and emergency resources
-                            </li>
-                            <li class="mb-3">
-                                <i data-feather="check" class="text-success me-2"></i>
-                                Secure messaging with your therapist
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-footer bg-white text-center">
-                        {% if not subscription or subscription.subscription_type != 'therapist_access' %}
-                        <button class="btn btn-warning btn-lg w-100" onclick="upgradeToTherapist()">
-                            <i data-feather="heart" class="me-2"></i>
-                            Get Therapist Access
-                        </button>
-                        {% else %}
-                        <button class="btn btn-success btn-lg w-100" disabled>
-                            <i data-feather="check" class="me-2"></i>
-                            Current Plan
-                        </button>
-                        {% endif %}
-                    </div>
+                </div>
+                <div class="p-6 flex-grow">
+                    <ul class="space-y-4">
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Everything in Premium</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Monthly video sessions with licensed therapists</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Professional analysis of your mood patterns</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Personalized therapy recommendations</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Crisis support and emergency resources</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                            <span>Secure messaging with your therapist</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-b-lg">
+                    {% if not subscription or subscription.subscription_type != 'therapist_access' %}
+                    <button class="w-full bg-yellow-500 text-white font-bold py-3 px-6 rounded-full hover:bg-yellow-600 flex items-center justify-center" onclick="upgradeToTherapist()">
+                        <span class="material-symbols-outlined mr-2">local_hospital</span>
+                        Get Therapist Access
+                    </button>
+                    {% else %}
+                    <button class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center" disabled>
+                        <span class="material-symbols-outlined mr-2">check</span>
+                        Current Plan
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Feature Comparison -->
-        <div class="card border-0 shadow-sm mb-5">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">Feature Comparison</h5>
+        <div class="bg-white rounded-lg shadow-lg mb-12">
+            <div class="p-6 border-b">
+                <h5 class="text-xl font-bold text-gray-800">Feature Comparison</h5>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th class="text-center">Free</th>
-                                <th class="text-center">Premium</th>
-                                <th class="text-center">Therapist Access</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Journal Entries</td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Basic Mood Analysis</td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Mood Trends</td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Advanced Analytics</td>
-                                <td class="text-center">
-                                    <i data-feather="x" class="text-danger"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Data Export</td>
-                                <td class="text-center">
-                                    <i data-feather="x" class="text-danger"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Professional Therapy</td>
-                                <td class="text-center">
-                                    <i data-feather="x" class="text-danger"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="x" class="text-danger"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i data-feather="check" class="text-success"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feature</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Free</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Premium</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Therapist Access</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Journal Entries</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Basic Mood Analysis</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mood Trends</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Advanced Analytics</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-red-500">close</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Data Export</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-red-500">close</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Professional Therapy</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-red-500">close</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-red-500">close</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center"><span class="material-symbols-outlined text-green-500">check</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <!-- Support SDG 3 -->
-        <div class="card border-0 shadow-sm bg-light">
-            <div class="card-body text-center py-5">
-                <i data-feather="heart" class="text-primary mb-3" style="width: 64px; height: 64px;"></i>
-                <h4 class="fw-bold mb-3">Supporting Global Mental Health</h4>
-                <p class="text-muted mb-4">
-                    Your premium subscription helps us support SDG 3: Good Health and Well-Being by funding 
-                    mental health resources for underserved communities worldwide.
-                </p>
-                <div class="row g-3 justify-content-center">
-                    <div class="col-md-4">
-                        <div class="stat-item">
-                            <h5 class="fw-bold text-primary">10,000+</h5>
-                            <small class="text-muted">People Helped</small>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-item">
-                            <h5 class="fw-bold text-success">50+</h5>
-                            <small class="text-muted">Countries Reached</small>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-item">
-                            <h5 class="fw-bold text-warning">$500K+</h5>
-                            <small class="text-muted">Donated to Mental Health</small>
-                        </div>
-                    </div>
+        <div class="bg-blue-50 rounded-lg shadow-lg text-center py-12">
+            <span class="material-symbols-outlined text-blue-500 text-7xl mb-4">volunteer_activism</span>
+            <h4 class="text-2xl font-bold text-gray-800 mb-4">Supporting Global Mental Health</h4>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-8">
+                Your premium subscription helps us support SDG 3: Good Health and Well-Being by funding 
+                mental health resources for underserved communities worldwide.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h5 class="text-3xl font-bold text-blue-500">10,000+</h5>
+                    <p class="text-gray-500">People Helped</p>
+                </div>
+                <div>
+                    <h5 class="text-3xl font-bold text-green-500">50+</h5>
+                    <p class="text-gray-500">Countries Reached</p>
+                </div>
+                <div>
+                    <h5 class="text-3xl font-bold text-yellow-500">$500K+</h5>
+                    <p class="text-gray-500">Donated to Mental Health</p>
                 </div>
             </div>
         </div>
@@ -275,20 +223,31 @@
 </div>
 
 <!-- Payment Processing Modal -->
-<div class="modal fade" id="paymentModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Secure Payment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Processing...</span>
+<div id="paymentModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <span class="material-symbols-outlined text-blue-600">credit_card</span>
                     </div>
-                    <p class="mt-3">Redirecting to secure payment...</p>
-                    <small class="text-muted">This feature will be integrated with IntaSend payment processing.</small>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Secure Payment
+                        </h3>
+                        <div class="mt-2">
+                            <div class="text-center py-4">
+                                <svg class="animate-spin h-10 w-10 text-blue-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <p class="mt-3 text-gray-600">Redirecting to secure payment...</p>
+                                <small class="text-gray-400">This feature will be integrated with IntaSend payment processing.</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,23 +266,15 @@ function upgradeToTherapist() {
 }
 
 function showPaymentModal(planName) {
-    const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-    modal.show();
+    const modal = document.getElementById('paymentModal');
+    modal.classList.remove('hidden');
     
     // Simulate payment processing
     setTimeout(() => {
-        modal.hide();
+        modal.classList.add('hidden');
         // In a real application, this would redirect to IntaSend payment gateway
         alert('This would redirect to IntaSend payment processing for: ' + planName);
     }, 3000);
 }
-
-// Initialize tooltips for feature comparison
-document.addEventListener('DOMContentLoaded', function() {
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
 </script>
 {% endblock %}

@@ -1,0 +1,92 @@
+[flake8]
+# Flake8 configuration for MindCare - AI-Powered Mental Health Journal
+# This file configures Python code style checking for SonarQube compliance
+
+# Maximum line length
+max-line-length = 88
+
+# Error codes to ignore
+ignore =
+    # E203: Whitespace before ':'
+    E203,
+    # W503: Line break before binary operator (conflicts with PEP 8)
+    W503,
+    # E501: Line too long (handled by max-line-length)
+    E501,
+    # F401: Module imported but unused (for __init__.py files)
+    F401,
+    # E402: Module level import not at top of file (for conditional imports)
+    E402
+
+# Files and directories to exclude
+exclude =
+    venv,
+    __pycache__,
+    .git,
+    .local,
+    .ropeproject,
+    attached_assets,
+    *.egg-info,
+    build,
+    dist,
+    debug_start.py,
+    init_demo.py,
+    migrate_db.py,
+    setup_db.py
+
+# Maximum complexity for functions
+max-complexity = 10
+
+# Enable specific error classes
+select =
+    E,  # pycodestyle errors
+    W,  # pycodestyle warnings
+    F,  # pyflakes
+    C,  # mccabe complexity
+
+# Per-file ignores
+per-file-ignores =
+    # Allow unused imports in __init__.py files
+    __init__.py:F401,
+    # Allow module-level imports not at top in Flask apps
+    app.py:E402,
+    routes.py:E402,
+    flask_auth.py:E402,
+    # Allow longer lines in configuration files
+    sonar-project.properties:E501
+
+# Show source code for each error
+show-source = True
+
+# Show pep8 error code
+show-pep8 = True
+
+# Count errors and warnings
+count = True
+
+# Statistics
+statistics = True
+
+# Benchmark
+benchmark = True
+
+# Enable specific plugins
+enable-extensions =
+    G,  # flake8-logging-format
+    B,  # flake8-bugbear
+    C,  # flake8-comprehensions
+
+# Format for output
+format = %(path)s:%(row)d:%(col)d: %(code)s %(text)s
+
+# Hanging indent
+hang-closing = True
+
+# Application import names (for import order checking)
+application-import-names =
+    mindcare,
+    app,
+    models,
+    routes,
+    flask_auth,
+    openai_service

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - MindCare{% endblock %}
+
+{% block main_class %}container mx-auto px-6 py-8{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <div class="mb-4">
+        <span class="material-symbols-outlined text-red-500 text-8xl">error</span>
+    </div>
+
+    <h1 class="text-6xl font-bold text-red-500 mb-2">500</h1>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Internal Server Error</h2>
+    <p class="text-gray-600 mb-6 max-w-md mx-auto">
+        Oops! Something went wrong on our end. We're working to fix this issue.
+        Your wellness journey is important to us, so please try again in a few moments.
+    </p>
+
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 max-w-md mx-auto mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <span class="material-symbols-outlined text-blue-400">info</span>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    If this problem persists, please contact our support team. Your data is safe and secure.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center space-x-4">
+        <button onclick="window.location.reload()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+            <span class="material-symbols-outlined mr-2">refresh</span>
+            Try Again
+        </button>
+        <a href="{{ url_for('index') }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
+            <span class="material-symbols-outlined mr-2">home</span>
+            Go Home
+        </a>
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="mt-6">
+        <a href="{{ url_for('dashboard') }}" class="text-blue-500 hover:underline flex items-center justify-center">
+            <span class="material-symbols-outlined mr-2">arrow_back</span>
+            Back to Dashboard
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="mt-12 pt-8 border-t max-w-md mx-auto">
+        <h6 class="text-gray-600 font-bold mb-4">What you can do:</h6>
+        <ul class="text-left space-y-2">
+            <li class="flex items-center">
+                <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                <span>Wait a few minutes and try again</span>
+            </li>
+            <li class="flex items-center">
+                <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                <span>Check your internet connection</span>
+            </li>
+            <li class="flex items-center">
+                <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                <span>Clear your browser cache</span>
+            </li>
+            <li class="flex items-center">
+                <span class="material-symbols-outlined text-green-500 mr-3">check_circle</span>
+                <span>Contact support if issue persists</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mt-6 text-sm text-gray-400">
+        <p>Error occurred at {{ moment().format('MMMM Do YYYY, h:mm:ss a') if moment else 'Unknown time' }}</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,249 +1,207 @@
-{% extends "base.html" %}
-
-{% block title %}Dashboard - MindCare{% endblock %}
-
-{% block content %}
-<div class="row">
+{% extends "base.html" %} {% block title %}Dashboard - MindCare{% endblock %} {% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Welcome Section -->
-    <div class="col-12 mb-4">
-        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
-            <div class="card-body p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="mb-2">Welcome back, {{ current_user.first_name or 'friend' }}!</h2>
-                        <p class="mb-0 opacity-75">
-                            {% if avg_mood %}
-                                Your average mood this month: 
-                                <strong>{{ "%.1f"|format(avg_mood) }}/5</strong>
-                                {% if avg_mood >= 4 %}
-                                    - You're doing great! 😊
-                                {% elif avg_mood >= 3 %}
-                                    - Keep up the good work! 👍
-                                {% else %}
-                                    - Remember, it's okay to have difficult days. We're here to support you. 💪
-                                {% endif %}
-                            {% else %}
-                                Start your wellness journey by writing your first journal entry.
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{{ url_for('new_entry') }}" class="btn btn-light btn-lg">
-                            <i data-feather="edit-3" class="me-2"></i>
-                            New Entry
-                        </a>
-                    </div>
+    <div class="md:col-span-3">
+        <div class="bg-blue-500 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold">
+                        Welcome back, {{ current_user.first_name or 'friend' }}!
+                    </h2>
+                    <p class="opacity-75">
+                        {% if avg_mood %}
+                        Your average mood this month:
+                        <strong class="font-bold">{{ "%.1f"|format(avg_mood) }}/5</strong>
+                        {% if avg_mood >= 4 %}
+                        <span>- You're doing great! 😊</span>
+                        {% elif avg_mood >= 3 %}
+                        <span>- Keep up the good work! 👍</span>
+                        {% else %}
+                        <span>- Remember, it\'s okay to have difficult days. We\'re here to support you. 💪</span>
+                        {% endif %}
+                        {% else %}
+                        Start your wellness journey by writing your first journal entry.
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('new_entry') }}" class="bg-white text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-gray-200 flex items-center">
+                        <span class="material-symbols-outlined mr-2">edit</span>
+                        <span>New Entry</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Quick Stats -->
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center">
-                <div class="stat-icon mb-3">
-                    <i data-feather="book-open" class="text-primary"></i>
-                </div>
-                <h3 class="fw-bold text-primary">{{ recent_entries|length }}</h3>
-                <p class="text-muted mb-0">Recent Entries</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <span class="material-symbols-outlined text-blue-500 text-5xl mb-4">menu_book</span>
+        <h3 class="text-3xl font-bold text-blue-500">{{ recent_entries|length }}</h3>
+        <p class="text-gray-600">Recent Entries</p>
     </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center">
-                <div class="stat-icon mb-3">
-                    <i data-feather="trending-up" class="text-success"></i>
-                </div>
-                <h3 class="fw-bold text-success">
-                    {% if avg_mood %}{{ "%.1f"|format(avg_mood) }}{% else %}--{% endif %}
-                </h3>
-                <p class="text-muted mb-0">Average Mood</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <span class="material-symbols-outlined text-green-500 text-5xl mb-4">trending_up</span>
+        <h3 class="text-3xl font-bold text-green-500">
+            {% if avg_mood %}{{ "%.1f"|format(avg_mood) }}{% else %}--{% endif %}
+        </h3>
+        <p class="text-gray-600">Average Mood</p>
     </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center">
-                <div class="stat-icon mb-3">
-                    <i data-feather="calendar" class="text-info"></i>
-                </div>
-                <h3 class="fw-bold text-info">{{ mood_entries|length }}</h3>
-                <p class="text-muted mb-0">Days Tracked</p>
-            </div>
-        </div>
+    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+        <span class="material-symbols-outlined text-indigo-500 text-5xl mb-4">calendar_today</span>
+        <h3 class="text-3xl font-bold text-indigo-500">{{ mood_entries|length }}</h3>
+        <p class="text-gray-600">Days Tracked</p>
     </div>
 
     <!-- Mood Chart -->
     {% if mood_entries %}
-    <div class="col-lg-8 mb-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white">
-                <h5 class="mb-0">
-                    <i data-feather="bar-chart-2" class="me-2"></i>
-                    Mood Trends (Last 30 Days)
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="moodChart" height="100"></canvas>
-            </div>
+    <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+        <h5 class="text-xl font-bold mb-4 flex items-center">
+            <span class="material-symbols-outlined mr-2">bar_chart</span>
+            Mood Trends (Last 30 Days)
+        </h5>
+        <div>
+            <canvas id="moodChart" height="150"></canvas>
         </div>
     </div>
     {% endif %}
 
     <!-- Recent Entries -->
-    <div class="col-lg-4 mb-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i data-feather="clock" class="me-2"></i>
-                    Recent Entries
-                </h5>
-                <a href="{{ url_for('all_entries') }}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-            <div class="card-body">
-                {% if recent_entries %}
-                    {% for entry in recent_entries %}
-                    <div class="entry-item mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="mb-1">
-                                <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="text-decoration-none">
-                                    {{ entry.title[:30] }}{% if entry.title|length > 30 %}...{% endif %}
-                                </a>
-                            </h6>
-                            {% if entry.mood_score %}
-                            <span class="badge mood-badge mood-{{ entry.mood_score|int }}">
-                                {{ entry.mood_score }}/5
-                            </span>
-                            {% endif %}
-                        </div>
-                        <small class="text-muted">
-                            <i data-feather="calendar" class="me-1"></i>
-                            {{ entry.created_at.strftime('%B %d, %Y') }}
-                        </small>
+    <div class="md:col-span-1 bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h5 class="text-xl font-bold flex items-center">
+                <span class="material-symbols-outlined mr-2">history</span>
+                Recent Entries
+            </h5>
+            <a href="{{ url_for('all_entries') }}" class="text-blue-500 hover:underline">View All</a>
+        </div>
+        <div>
+            {% if recent_entries %}
+            <ul class="space-y-4">
+                {% for entry in recent_entries %}
+                <li class="border-b pb-4">
+                    <div class="flex justify-between items-start">
+                        <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="font-bold hover:underline truncate">
+                            {{ entry.title[:25] }}{% if entry.title|length > 25 %}...{% endif %}
+                        </a>
+                        {% if entry.mood_score %}
+                        <span class="text-xs font-bold py-1 px-2 rounded-full
+                            {% if entry.mood_score|int == 5 %} bg-green-100 text-green-800
+                            {% elif entry.mood_score|int == 4 %} bg-blue-100 text-blue-800
+                            {% elif entry.mood_score|int == 3 %} bg-yellow-100 text-yellow-800
+                            {% elif entry.mood_score|int == 2 %} bg-orange-100 text-orange-800
+                            {% else %} bg-red-100 text-red-800 {% endif %}">
+                            {{ entry.mood_score }}/5
+                        </span>
+                        {% endif %}
                     </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="text-center py-4">
-                        <i data-feather="edit-3" class="text-muted mb-3" style="width: 48px; height: 48px;"></i>
-                        <p class="text-muted">No entries yet.</p>
-                        <a href="{{ url_for('new_entry') }}" class="btn btn-primary">Write Your First Entry</a>
-                    </div>
-                {% endif %}
+                    <p class="text-sm text-gray-500 flex items-center mt-1">
+                        <span class="material-symbols-outlined text-sm mr-1">calendar_today</span>
+                        {{ entry.created_at.strftime('%B %d, %Y') }}
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="text-center py-8">
+                <span class="material-symbols-outlined text-gray-400 text-6xl">edit_note</span>
+                <p class="text-gray-500 mt-4">No entries yet.</p>
+                <a href="{{ url_for('new_entry') }}" class="mt-4 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600">
+                    Write Your First Entry
+                </a>
             </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="mb-3">
-                    <i data-feather="zap" class="me-2"></i>
-                    Quick Actions
-                </h5>
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <a href="{{ url_for('new_entry') }}" class="btn btn-outline-primary w-100">
-                            <i data-feather="edit-3" class="me-2"></i>
-                            New Entry
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('mood_trends') }}" class="btn btn-outline-success w-100">
-                            <i data-feather="trending-up" class="me-2"></i>
-                            View Trends
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('all_entries') }}" class="btn btn-outline-info w-100">
-                            <i data-feather="book" class="me-2"></i>
-                            All Entries
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('premium') }}" class="btn btn-outline-warning w-100">
-                            <i data-feather="star" class="me-2"></i>
-                            Premium
-                        </a>
-                    </div>
-                </div>
+    <div class="md:col-span-3">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h5 class="text-xl font-bold mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-2">bolt</span>
+                Quick Actions
+            </h5>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="{{ url_for('new_entry') }}" class="bg-blue-100 text-blue-800 font-bold py-4 px-2 rounded-lg text-center hover:bg-blue-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">edit</span>
+                    <span class="text-sm">New Entry</span>
+                </a>
+                <a href="{{ url_for('mood_trends') }}" class="bg-green-100 text-green-800 font-bold py-4 px-2 rounded-lg text-center hover:bg-green-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">trending_up</span>
+                    <span class="text-sm">Trends</span>
+                </a>
+                <a href="{{ url_for('all_entries') }}" class="bg-indigo-100 text-indigo-800 font-bold py-4 px-2 rounded-lg text-center hover:bg-indigo-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">menu_book</span>
+                    <span class="text-sm">All Entries</span>
+                </a>
+                <a href="{{ url_for('premium') }}" class="bg-yellow-100 text-yellow-800 font-bold py-4 px-2 rounded-lg text-center hover:bg-yellow-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">star</span>
+                    <span class="text-sm">Premium</span>
+                </a>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-{% if mood_entries %}
+{% endblock %} {% block extra_scripts %} {% if mood_entries %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('moodChart').getContext('2d');
-    
-    const moodData = {
-        labels: [
-            {% for entry in mood_entries %}
-            '{{ entry.created_at.strftime("%m/%d") }}'{% if not loop.last %},{% endif %}
-            {% endfor %}
-        ],
-        datasets: [{
-            label: 'Mood Score',
-            data: [
+    document.addEventListener('DOMContentLoaded', function() {
+        const moodData = {
+            labels: [
                 {% for entry in mood_entries %}
-                {{ entry.mood_score }}{% if not loop.last %},{% endif %}
+                '{{ entry.created_at.strftime("%m/%d") }}'{% if not loop.last %},{% endif %}
                 {% endfor %}
             ],
-            borderColor: '#2196F3',
-            backgroundColor: 'rgba(33, 150, 243, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#2196F3',
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointRadius: 5
-        }]
-    };
+            datasets: [{
+                label: 'Mood Score',
+                data: [
+                    {% for entry in mood_entries %}
+                    {{ entry.mood_score }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#3B82F6',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            }]
+        };
 
-    new Chart(ctx, {
-        type: 'line',
-        data: moodData,
-        options: {
+        const chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     max: 5,
-                    ticks: {
-                        stepSize: 1
-                    },
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
-                    }
+                    ticks: { stepSize: 1 },
+                    grid: { color: 'rgba(0,0,0,0.05)' }
                 },
                 x: {
-                    grid: {
-                        color: 'rgba(0,0,0,0.1)'
-                    }
+                    grid: { display: false }
                 }
             },
             elements: {
-                point: {
-                    hoverRadius: 8
-                }
+                point: { hoverRadius: 8 }
             }
+        };
+
+        const ctx = document.getElementById('moodChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: moodData,
+                options: chartOptions
+            });
         }
     });
-});
 </script>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}

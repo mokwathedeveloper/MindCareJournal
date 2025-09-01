@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "mindcare-health",
+        "projectKey": "mindcare-mental-health-journal"
+    }
+}

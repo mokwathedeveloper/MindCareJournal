@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Verification</title>
+</head>
+<body>
+    <p>Dear {{ user.username }},</p>
+    <p>Thank you for registering with MindCare Journal!</p>
+    <p>Please click on the following link to verify your email address:</p>
+    <p><a href="{{ verify_link }}">{{ verify_link }}</a></p>
+    <p>If you did not register for this service, please ignore this email.</p>
+    <p>Thank you,</p>
+    <p>The MindCare Team</p>
+</body>
+</html>

@@ -3,26 +3,24 @@
 {% block title %}Access Denied - MindCare{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 text-center">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body py-5">
-                <i data-feather="shield-off" class="text-danger mb-4" style="width: 80px; height: 80px;"></i>
-                <h1 class="h2 fw-bold text-danger mb-3">Access Denied</h1>
-                <p class="text-muted mb-4">
-                    Sorry, you don't have permission to access this resource. 
-                    Please log in with the appropriate credentials.
-                </p>
-                <div class="d-flex gap-3 justify-content-center">
-                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-primary">
-                        <i data-feather="log-in" class="me-2"></i>
-                        Login
-                    </a>
-                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                        <i data-feather="home" class="me-2"></i>
-                        Go Home
-                    </a>
-                </div>
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full text-center">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <span class="material-symbols-outlined text-red-500 text-8xl mb-4">gpp_bad</span>
+            <h1 class="text-3xl font-bold text-red-500 mb-2">Access Denied</h1>
+            <p class="text-gray-600 mb-6">
+                Sorry, you don't have permission to access this resource. 
+                Please log in with the appropriate credentials.
+            </p>
+            <div class="flex justify-center space-x-4">
+                <a href="{{ url_for('auth.login') }}" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+                    <span class="material-symbols-outlined mr-2">login</span>
+                    Login
+                </a>
+                <a href="{{ url_for('index') }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
+                    <span class="material-symbols-outlined mr-2">home</span>
+                    Go Home
+                </a>
             </div>
         </div>
     </div>

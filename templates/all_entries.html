@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}All Entries - MindCare{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+                <span class="material-symbols-outlined mr-3 text-3xl">import_contacts</span>
+                All Journal Entries
+            </h2>
+            <p class="text-gray-500">Your complete wellness journey</p>
+        </div>
+        <div>
+            <a href="{{ url_for('new_entry') }}" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+                <span class="material-symbols-outlined mr-2">add</span>
+                New Entry
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <span class="material-symbols-outlined text-blue-500 text-5xl mb-4">menu_book</span>
+            <h4 class="text-3xl font-bold text-blue-500 mb-1">{{ entries.total }}</h4>
+            <small class="text-gray-500">Total Entries</small>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <span class="material-symbols-outlined text-green-500 text-5xl mb-4">calendar_today</span>
+            <h4 class="text-3xl font-bold text-green-500 mb-1">
+                {% set days_active = entries.items|map(attribute='created_at')|map('strftime', '%Y-%m-%d')|unique|list|length %}
+                {{ days_active }}
+            </h4>
+            <small class="text-gray-500">Days Active</small>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <span class="material-symbols-outlined text-indigo-500 text-5xl mb-4">trending_up</span>
+            <h4 class="text-3xl font-bold text-indigo-500 mb-1">
+                {% set mood_entries = entries.items|selectattr('mood_score')|list %}
+                {% if mood_entries %}
+                    {{ "%.1f"|format(mood_entries|sum(attribute='mood_score') / mood_entries|length) }}
+                {% else %}
+                    --
+                {% endif %}
+            </h4>
+            <small class="text-gray-500">Avg Mood</small>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <span class="material-symbols-outlined text-yellow-500 text-5xl mb-4">history_edu</span>
+            <h4 class="text-3xl font-bold text-yellow-500 mb-1">
+                {% if entries.items %}
+                    {% set word_counts = entries.items|map(attribute='content')|map('split')|map('length')|list %}
+                    {{ (word_counts|sum / word_counts|length)|round|int }}
+                {% else %}
+                    0
+                {% endif %}
+            </h4>
+            <small class="text-gray-500">Avg Words</small>
+        </div>
+    </div>
+
+    <!-- Entries List -->
+    <div class="bg-white rounded-lg shadow-lg">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h5 class="text-xl font-bold text-gray-800 flex items-center">
+                <span class="material-symbols-outlined mr-3">list</span>
+                Your Entries
+                {% if entries.total > 0 %}
+                    <span class="ml-2 bg-blue-500 text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">{{ entries.total }}</span>
+                {% endif %}
+            </h5>
+            <div class="relative">
+                <button class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg inline-flex items-center">
+                    <span class="material-symbols-outlined mr-2">filter_list</span>
+                    <span>Filter</span>
+                </button>
+                <ul class="absolute hidden text-gray-700 pt-1">
+                    <li><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="{{ url_for('all_entries') }}">All Entries</a></li>
+                    <li><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="{{ url_for('all_entries') }}?mood=high">High Mood (4-5)</a></li>
+                    <li><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="{{ url_for('all_entries') }}?mood=neutral">Neutral Mood (3)</a></li>
+                    <li><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="{{ url_for('all_entries') }}?mood=low">Low Mood (1-2)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
+            {% if entries.items %}
+                <div class="divide-y">
+                    {% for entry in entries.items %}
+                    <div class="p-6 hover:bg-gray-50">
+                        <div class="grid grid-cols-12 gap-4 items-start">
+                            <div class="col-span-12 md:col-span-8">
+                                <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="text-lg font-bold text-gray-800 hover:underline">{{ entry.title }}</a>
+                                <p class="mt-2 text-gray-600 text-sm">
+                                    {{ entry.content[:120] }}{% if entry.content|length > 120 %}...{% endif %}
+                                </p>
+                                <div class="mt-3 flex items-center text-gray-500 text-xs space-x-4">
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-sm mr-1">calendar_today</span>
+                                        <span>{{ entry.created_at.strftime('%B %d, %Y') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-sm mr-1">schedule</span>
+                                        <span>{{ entry.created_at.strftime('%I:%M %p') }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-sm mr-1">text_fields</span>
+                                        <span>{{ entry.content.split()|length }} words</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-6 md:col-span-2 text-center">
+                                {% if entry.mood_score %}
+                                    <span class="text-xs font-bold py-1 px-2 rounded-full
+                                        {% if entry.mood_score|int == 5 %} bg-green-100 text-green-800
+                                        {% elif entry.mood_score|int == 4 %} bg-blue-100 text-blue-800
+                                        {% elif entry.mood_score|int == 3 %} bg-yellow-100 text-yellow-800
+                                        {% elif entry.mood_score|int == 2 %} bg-orange-100 text-orange-800
+                                        {% else %} bg-red-100 text-red-800 {% endif %}">
+                                        {{ entry.mood_score }}/5
+                                    </span>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        {% if entry.confidence %}
+                                            {{ (entry.confidence * 100)|round|int }}% confidence
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <span class="text-gray-500 text-xs">No mood data</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-span-6 md:col-span-2 text-right">
+                                <div class="inline-flex rounded-md shadow-sm">
+                                    <a href="{{ url_for('view_entry', entry_id=entry.id) }}" class="px-2 py-1 text-sm font-medium text-blue-700 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                        <span class="material-symbols-outlined text-sm">visibility</span>
+                                    </a>
+                                    <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="px-2 py-1 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                        <span class="material-symbols-outlined text-sm">edit</span>
+                                    </a>
+                                    <button type="button" class="px-2 py-1 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" onclick="confirmDelete({{ entry.id }}, '{{ entry.title }}')">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-16">
+                    <span class="material-symbols-outlined text-gray-400 text-8xl">menu_book</span>
+                    <h5 class="text-xl font-semibold text-gray-700 mt-4">No Journal Entries Yet</h5>
+                    <p class="text-gray-500 mt-2">
+                        Start your wellness journey by writing your first journal entry.
+                        <br>
+                        Share your thoughts, feelings, and experiences.
+                    </p>
+                    <a href="{{ url_for('new_entry') }}" class="mt-6 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center mx-auto w-max">
+                        <span class="material-symbols-outlined mr-2">add</span>
+                        Write Your First Entry
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination -->
+        {% if entries.pages > 1 %}
+        <div class="p-6 border-t">
+            <nav class="flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                    Showing {{ ((entries.page - 1) * entries.per_page + 1) }} -
+                    {{ (entries.page * entries.per_page) if entries.page * entries.per_page <= entries.total else entries.total }}
+                    of {{ entries.total }} entries
+                </div>
+                <ul class="inline-flex -space-x-px">
+                    {% if entries.has_prev %}
+                        <li>
+                            <a href="{{ url_for('all_entries', page=entries.prev_num) }}" class="py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                                <span class="material-symbols-outlined text-sm">chevron_left</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for page_num in entries.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != entries.page %}
+                                <li>
+                                    <a href="{{ url_for('all_entries', page=page_num) }}" class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="#" aria-current="page" class="py-2 px-3 text-blue-600 bg-blue-50 border border-gray-300 hover:bg-blue-100 hover:text-blue-700">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li>
+                                <span class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if entries.has_next %}
+                        <li>
+                            <a href="{{ url_for('all_entries', page=entries.next_num) }}" class="py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <span class="material-symbols-outlined text-red-600">warning</span>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Confirm Deletion
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500">
+                                Are you sure you want to delete the entry "<strong id="deleteEntryTitle"></strong>"?
+                            </p>
+                            <div class="mt-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+                                <div class="flex">
+                                    <div class="py-1"><span class="material-symbols-outlined text-yellow-500 mr-2">info</span></div>
+                                    <div>
+                                        <p class="text-sm">This action cannot be undone. The entry and its mood analysis will be permanently removed.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <form id="deleteForm" method="POST" class="inline-block">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        <span class="material-symbols-outlined mr-2">delete</span>
+                        Delete Entry
+                    </button>
+                </form>
+                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="closeModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function confirmDelete(entryId, entryTitle) {
+    // Set the entry title in the modal
+    document.getElementById('deleteEntryTitle').textContent = entryTitle;
+
+    // Set the form action
+    document.getElementById('deleteForm').action = `/entry/${entryId}/delete`;
+
+    // Show the modal
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.classList.remove('hidden');
+}
+
+function closeModal() {
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.classList.add('hidden');
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading states to action buttons
+    document.querySelectorAll('.inline-flex .px-2').forEach(button => {
+        if (!button.onclick) {  // Don't add to delete buttons
+            button.addEventListener('click', function() {
+                const originalHtml = this.innerHTML;
+                this.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+                this.disabled = true;
+
+                // Restore after a short delay if still on page (fallback)
+                setTimeout(() => {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                }, 5000);
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

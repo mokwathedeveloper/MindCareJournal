@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - MindCare{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="p-6 border-b text-center">
+                <h3 class="text-2xl font-bold text-gray-800 flex items-center justify-center">
+                    <span class="material-symbols-outlined mr-3">edit_note</span>
+                    Edit Profile
+                </h3>
+                <p class="text-gray-500">Update your personal information</p>
+            </div>
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    {% if current_user.profile_image_url %}
+                        <img src="{{ current_user.profile_image_url }}"
+                             alt="Profile Picture"
+                             class="w-24 h-24 rounded-full object-cover shadow-md mx-auto">
+                    {% else %}
+                        <div class="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md mx-auto">
+                            <span class="material-symbols-outlined text-5xl">person</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text"
+                                   class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="first_name"
+                                   name="first_name"
+                                   value="{{ current_user.first_name or '' }}"
+                                   placeholder="Enter your first name"
+                                   maxlength="100">
+                            <p class="mt-2 text-xs text-gray-500">Optional - helps personalize your experience</p>
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text"
+                                   class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   id="last_name"
+                                   name="last_name"
+                                   value="{{ current_user.last_name or '' }}"
+                                   placeholder="Enter your last name"
+                                   maxlength="100">
+                            <p class="mt-2 text-xs text-gray-500">Optional - used for formal communications</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div>
+                        <h6 class="text-lg font-bold text-gray-600 mb-4">Account Information (Read-only)</h6>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-sm font-bold text-gray-500">Username</label>
+                                <p class="mt-1 text-gray-800 bg-gray-100 p-2 rounded-md">@{{ current_user.username }}</p>
+                                <p class="mt-2 text-xs text-gray-500 flex items-center">
+                                    <span class="material-symbols-outlined text-xs mr-1">info</span>
+                                    Username cannot be changed
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-bold text-gray-500">Email Address</label>
+                                <div class="mt-1 flex items-center bg-gray-100 p-2 rounded-md">
+                                    <p class="text-gray-800">{{ current_user.email }}</p>
+                                    {% if current_user.email_verified %}
+                                        <span class="ml-2 text-xs font-semibold inline-flex items-center px-2.5 py-0.5 rounded-full bg-green-100 text-green-800">
+                                            <span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                                            Verified
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500 flex items-center">
+                                    <span class="material-symbols-outlined text-xs mr-1">info</span>
+                                    Contact support to change email
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6 border-t">
+                        <a href="{{ url_for('profile') }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
+                            <span class="material-symbols-outlined mr-2">close</span>
+                            <span>Cancel</span>
+                        </a>
+                        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+                            <span class="material-symbols-outlined mr-2">save</span>
+                            <span>Save Changes</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h6 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-3">settings</span>
+                Additional Settings
+            </h6>
+            <a href="{{ url_for('auth.change_password') }}" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded-full hover:bg-yellow-600 flex items-center justify-center">
+                <span class="material-symbols-outlined mr-2">key</span>
+                Change Password
+            </a>
+        </div>
+
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h6 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-3">checklist</span>
+                Profile Completion
+            </h6>
+            {% set completion_score = 0 %}
+            {% if current_user.first_name %}{% set completion_score = completion_score + 25 %}{% endif %}
+            {% if current_user.last_name %}{% set completion_score = completion_score + 25 %}{% endif %}
+            {% if current_user.email_verified %}{% set completion_score = completion_score + 25 %}{% endif %}
+            {% if current_user.profile_image_url %}{% set completion_score = completion_score + 25 %}{% endif %}
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: {{ completion_score }}%"></div>
+            </div>
+            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                <span>{{ completion_score }}% complete</span>
+                {% if completion_score < 100 %}
+                    <span class="flex items-center text-blue-500">
+                        <span class="material-symbols-outlined text-sm mr-1">arrow_upward</span>
+                        Complete your profile for a better experience
+                    </span>
+                {% else %}
+                    <span class="flex items-center text-green-500">
+                        <span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                        Profile complete!
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

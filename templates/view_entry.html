@@ -1,99 +1,101 @@
-{% extends "base.html" %}
-
-{% block title %}{{ entry.title }} - MindCare{% endblock %}
-
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
+{% extends "base.html" %} {% block title %}{{ entry.title }} - MindCare{% endblock %} {% block content %}
+<div class="container mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto">
         <!-- Entry Header -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="bg-white rounded-lg shadow-lg mb-8">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h2 class="mb-2">{{ entry.title }}</h2>
-                        <div class="text-muted">
-                            <i data-feather="calendar" class="me-1"></i>
-                            {{ entry.created_at.strftime('%A, %B %d, %Y') }}
-                            <span class="mx-2">•</span>
-                            <i data-feather="clock" class="me-1"></i>
-                            {{ entry.created_at.strftime('%I:%M %p') }}
+                        <h2 class="text-3xl font-bold text-gray-800">{{ entry.title }}</h2>
+                        <div class="text-sm text-gray-500 mt-2 flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined text-sm mr-1">calendar_today</span>
+                                <span>{{ entry.created_at.strftime('%A, %B %d, %Y') }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined text-sm mr-1">schedule</span>
+                                <span>{{ entry.created_at.strftime('%I:%M %p') }}</span>
+                            </div>
                             {% if entry.updated_at != entry.created_at %}
-                            <span class="mx-2">•</span>
-                            <small class="text-info">
-                                <i data-feather="edit-3" class="me-1"></i>
-                                Updated {{ entry.updated_at.strftime('%B %d, %Y') }}
-                            </small>
+                            <div class="flex items-center text-blue-500">
+                                <span class="material-symbols-outlined text-sm mr-1">edit_calendar</span>
+                                <span>Updated {{ entry.updated_at.strftime('%B %d, %Y') }}</span>
+                            </div>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="btn-group">
-                        <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="btn btn-outline-primary">
-                            <i data-feather="edit" class="me-1"></i>
-                            Edit
+                    <div class="flex space-x-2">
+                        <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+                            <span class="material-symbols-outlined mr-2">edit</span>
+                            <span>Edit</span>
                         </a>
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
-                            <i data-feather="arrow-left" class="me-1"></i>
-                            Back
+                        <a href="{{ url_for('dashboard') }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
+                            <span class="material-symbols-outlined mr-2">arrow_back</span>
+                            <span>Back</span>
                         </a>
                     </div>
                 </div>
 
                 <!-- Mood Analysis -->
                 {% if entry.mood_score %}
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <div class="mood-analysis-card">
-                            <h6 class="fw-semibold mb-2">
-                                <i data-feather="heart" class="me-2"></i>
-                                Mood Analysis
-                            </h6>
-                            <div class="d-flex align-items-center mb-2">
-                                <span class="badge mood-badge mood-{{ entry.mood_score|int }} me-3">
-                                    {{ entry.mood_score }}/5
-                                </span>
-                                <div>
-                                    <div class="mood-description">
-                                        {% if entry.mood_score >= 4.5 %}
-                                            Very Positive
-                                        {% elif entry.mood_score >= 3.5 %}
-                                            Positive
-                                        {% elif entry.mood_score >= 2.5 %}
-                                            Neutral
-                                        {% elif entry.mood_score >= 1.5 %}
-                                            Negative
-                                        {% else %}
-                                            Very Negative
-                                        {% endif %}
-                                    </div>
-                                    <small class="text-muted">
-                                        Confidence: {{ "%.0f"|format(entry.confidence * 100) }}%
-                                    </small>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <h6 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <span class="material-symbols-outlined mr-2 text-blue-500">psychology</span>
+                            Mood Analysis
+                        </h6>
+                        <div class="flex items-center">
+                            <div class="mr-6">
+                                <div class="text-5xl font-bold 
+                                    {% if entry.mood_score >= 4.5 %} text-green-500
+                                    {% elif entry.mood_score >= 3.5 %} text-blue-500
+                                    {% elif entry.mood_score >= 2.5 %} text-indigo-500
+                                    {% elif entry.mood_score >= 1.5 %} text-yellow-500
+                                    {% else %} text-red-500 {% endif %}">
+                                    {{ "%.1f"|format(entry.mood_score) }}
+                                </div>
+                                <div class="text-sm text-gray-500">out of 5</div>
+                            </div>
+                            <div>
+                                <div class="text-xl font-bold 
+                                    {% if entry.mood_score >= 4.5 %} text-green-600
+                                    {% elif entry.mood_score >= 3.5 %} text-blue-600
+                                    {% elif entry.mood_score >= 2.5 %} text-indigo-600
+                                    {% elif entry.mood_score >= 1.5 %} text-yellow-600
+                                    {% else %} text-red-600 {% endif %}">
+                                    {% if entry.mood_score >= 4.5 %}Very Positive
+                                    {% elif entry.mood_score >= 3.5 %}Positive
+                                    {% elif entry.mood_score >= 2.5 %}Neutral
+                                    {% elif entry.mood_score >= 1.5 %}Negative
+                                    {% else %}Very Negative
+                                    {% endif %}
+                                </div>
+                                <div class="text-sm text-gray-500 mt-1">
+                                    Analysis Confidence: {{ "%.0f"|format(entry.confidence * 100) }}%
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     {% if entry.emotions %}
-                    <div class="col-md-6">
-                        <div class="emotions-analysis">
-                            <h6 class="fw-semibold mb-2">
-                                <i data-feather="smile" class="me-2"></i>
-                                Emotions Detected
-                            </h6>
-                            <div class="emotions-list">
-                                {% set sorted_emotions = entry.emotions.items()|list|sort(attribute=1, reverse=True) %}
-                                {% for emotion, value in sorted_emotions[:4] if value > 5 %}
-                                <div class="emotion-item d-flex justify-content-between align-items-center mb-1">
-                                    <span class="emotion-name">{{ emotion.title() }}</span>
-                                    <div class="d-flex align-items-center">
-                                        <div class="emotion-bar me-2">
-                                            <div class="emotion-fill" style="width: {{ value }}%"></div>
-                                        </div>
-                                        <small class="text-muted">{{ "%.0f"|format(value) }}%</small>
-                                    </div>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h6 class="font-bold text-gray-800 mb-3 flex items-center">
+                            <span class="material-symbols-outlined mr-2 text-yellow-500">sentiment_satisfied</span>
+                            Emotions Detected
+                        </h6>
+                        <div class="space-y-2">
+                            {% set sorted_emotions = entry.emotions.items()|list|sort(attribute=1, reverse=True) %}
+                            {% for emotion, value in sorted_emotions[:4] if value > 5 %}
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">{{ emotion.title() }}</span>
+                                    <span class="text-sm font-medium text-gray-500">{{ "%.0f"|format(value) }}%</span>
                                 </div>
-                                {% endfor %}
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div class="bg-blue-400 h-2.5 rounded-full" style="width: {{ value }}%"></div>
+                                </div>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                     {% endif %}
@@ -103,87 +105,61 @@
         </div>
 
         <!-- Entry Content -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="entry-content">
-                    {{ entry.content|replace('\n', '<br>')|safe }}
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="p-6">
+                <div class="prose max-w-none text-gray-800">
+                    {{ entry.content|replace('\n', '<br />')|safe }}
                 </div>
             </div>
         </div>
 
         <!-- Navigation -->
-        <div class="row mt-4">
-            <div class="col-md-6">
+        <div class="flex justify-between mt-8">
+            <div>
                 {% set prev_entry = entry.user.journal_entries|selectattr('id', 'lt', entry.id)|list|last %}
                 {% if prev_entry %}
-                <a href="{{ url_for('view_entry', entry_id=prev_entry.id) }}" class="btn btn-outline-secondary">
-                    <i data-feather="chevron-left" class="me-2"></i>
+                <a href="{{ url_for('view_entry', entry_id=prev_entry.id) }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
+                    <span class="material-symbols-outlined mr-2">chevron_left</span>
                     Previous Entry
                 </a>
                 {% endif %}
             </div>
-            <div class="col-md-6 text-end">
+            <div>
                 {% set next_entry = entry.user.journal_entries|selectattr('id', 'gt', entry.id)|list|first %}
                 {% if next_entry %}
-                <a href="{{ url_for('view_entry', entry_id=next_entry.id) }}" class="btn btn-outline-secondary">
+                <a href="{{ url_for('view_entry', entry_id=next_entry.id) }}" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full hover:bg-gray-300 flex items-center">
                     Next Entry
-                    <i data-feather="chevron-right" class="ms-2"></i>
+                    <span class="material-symbols-outlined ml-2">chevron_right</span>
                 </a>
                 {% endif %}
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="card border-0 shadow-sm mt-4">
-            <div class="card-body">
-                <h6 class="fw-semibold mb-3">
-                    <i data-feather="zap" class="me-2"></i>
-                    Quick Actions
-                </h6>
-                <div class="row g-2">
-                    <div class="col-md-3">
-                        <a href="{{ url_for('new_entry') }}" class="btn btn-primary w-100">
-                            <i data-feather="plus" class="me-2"></i>
-                            New Entry
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="btn btn-outline-primary w-100">
-                            <i data-feather="edit" class="me-2"></i>
-                            Edit This
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('mood_trends') }}" class="btn btn-outline-success w-100">
-                            <i data-feather="trending-up" class="me-2"></i>
-                            View Trends
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">
-                            <i data-feather="home" class="me-2"></i>
-                            Dashboard
-                        </a>
-                    </div>
-                </div>
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h6 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-3 text-blue-500">bolt</span>
+                Quick Actions
+            </h6>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="{{ url_for('new_entry') }}" class="bg-blue-100 text-blue-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-blue-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">add</span>
+                    <span class="text-sm">New Entry</span>
+                </a>
+                <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-yellow-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">edit</span>
+                    <span class="text-sm">Edit This</span>
+                </a>
+                <a href="{{ url_for('mood_trends') }}" class="bg-green-100 text-green-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-green-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">trending_up</span>
+                    <span class="text-sm">View Trends</span>
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="bg-gray-100 text-gray-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-gray-200 flex flex-col items-center justify-center">
+                    <span class="material-symbols-outlined mb-1">dashboard</span>
+                    <span class="text-sm">Dashboard</span>
+                </a>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-// Smooth scroll for long entries
-document.addEventListener('DOMContentLoaded', function() {
-    const entryContent = document.querySelector('.entry-content');
-    if (entryContent && entryContent.scrollHeight > window.innerHeight) {
-        entryContent.style.maxHeight = '60vh';
-        entryContent.style.overflowY = 'auto';
-        entryContent.style.padding = '1rem';
-        entryContent.style.background = '#f8f9fa';
-        entryContent.style.borderRadius = '0.375rem';
-    }
-});
-</script>
 {% endblock %}

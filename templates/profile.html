@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - MindCare{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Profile Header & Stats -->
+        <div class="lg:col-span-1 space-y-8">
+            <!-- Profile Header -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="flex flex-col items-center text-center">
+                    <div class="relative mb-4">
+                        {% if current_user.profile_image_url %}
+                            <img src="{{ current_user.profile_image_url }}"
+                                 alt="Profile Picture"
+                                 class="w-24 h-24 rounded-full object-cover shadow-md">
+                        {% else %}
+                            <div class="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-md">
+                                <span class="material-symbols-outlined text-5xl">person</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">{{ current_user.full_name }}</h2>
+                    <p class="text-gray-500">@{{ current_user.username }}</p>
+                    <p class="text-sm text-gray-400 mt-2 flex items-center">
+                        <span class="material-symbols-outlined text-sm mr-1">calendar_today</span>
+                        Member since {{ current_user.created_at.strftime('%B %Y') }}
+                    </p>
+                    <a href="{{ url_for('edit_profile') }}" class="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-600 flex items-center">
+                        <span class="material-symbols-outlined mr-2">edit</span>
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Journal Statistics -->
+            <div class="bg-white rounded-lg shadow-lg">
+                <div class="p-6 border-b">
+                    <h5 class="text-xl font-bold text-gray-800 flex items-center">
+                        <span class="material-symbols-outlined mr-3">bar_chart</span>
+                        Your Statistics
+                    </h5>
+                </div>
+                <div class="p-6">
+                    {% set total_entries = current_user.journal_entries|length %}
+                    {% set recent_entries = current_user.journal_entries|selectattr('created_at', 'ge', (moment().subtract(30, 'days').datetime))|list %}
+                    <div class="text-center mb-6">
+                        <span class="material-symbols-outlined text-blue-500 text-6xl">menu_book</span>
+                        <h3 class="text-4xl font-bold text-blue-500 mt-2">{{ total_entries }}</h3>
+                        <small class="text-gray-500">Total Journal Entries</small>
+                    </div>
+                    <hr>
+                    <div class="flex justify-around text-center mt-6">
+                        <div>
+                            <span class="material-symbols-outlined text-green-500 text-4xl">calendar_month</span>
+                            <h5 class="text-2xl font-bold text-green-500 mt-1">{{ recent_entries|length }}</h5>
+                            <small class="text-gray-500">This Month</small>
+                        </div>
+                        <div>
+                            <span class="material-symbols-outlined text-indigo-500 text-4xl">sentiment_satisfied</span>
+                            <h5 class="text-2xl font-bold text-indigo-500 mt-1">
+                                {% set mood_entries = current_user.journal_entries|selectattr('mood_score')|list %}
+                                {% if mood_entries %}
+                                    {{ "%.1f"|format(mood_entries|sum(attribute='mood_score') / mood_entries|length) }}
+                                {% else %}
+                                    --
+                                {% endif %}
+                            </h5>
+                            <small class="text-gray-500">Avg. Mood</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Account Info & Actions -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Account Information -->
+            <div class="bg-white rounded-lg shadow-lg">
+                <div class="p-6 border-b">
+                    <h5 class="text-xl font-bold text-gray-800 flex items-center">
+                        <span class="material-symbols-outlined mr-3">badge</span>
+                        Account Information
+                    </h5>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">Username</label>
+                        <p class="mt-1 text-gray-800">{{ current_user.username }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">Email Address</label>
+                        <div class="mt-1 flex items-center">
+                            <p class="text-gray-800">{{ current_user.email }}</p>
+                            {% if current_user.email_verified %}
+                                <span class="ml-2 text-xs font-semibold inline-flex items-center px-2.5 py-0.5 rounded-full bg-green-100 text-green-800">
+                                    <span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                                    Verified
+                                </span>
+                            {% else %}
+                                <span class="ml-2 text-xs font-semibold inline-flex items-center px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800">
+                                    <span class="material-symbols-outlined text-sm mr-1">warning</span>
+                                    Unverified
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">First Name</label>
+                        <p class="mt-1 text-gray-800">{{ current_user.first_name or 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">Last Name</label>
+                        <p class="mt-1 text-gray-800">{{ current_user.last_name or 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">Account Status</label>
+                        <div class="mt-1">
+                            {% if current_user.is_active %}
+                                <span class="text-xs font-semibold inline-flex items-center px-2.5 py-0.5 rounded-full bg-green-100 text-green-800">
+                                    <span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="text-xs font-semibold inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-100 text-red-800">
+                                    <span class="material-symbols-outlined text-sm mr-1">cancel</span>
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-bold text-gray-500">Last Updated</label>
+                        <p class="mt-1 text-gray-800">{{ current_user.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="bg-white rounded-lg shadow-lg">
+                <div class="p-6 border-b">
+                    <h5 class="text-xl font-bold text-gray-800 flex items-center">
+                        <span class="material-symbols-outlined mr-3">settings</span>
+                        Account Actions
+                    </h5>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <a href="{{ url_for('edit_profile') }}" class="bg-blue-100 text-blue-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-blue-200 flex flex-col items-center justify-center">
+                            <span class="material-symbols-outlined mb-1">edit</span>
+                            <span class="text-sm">Edit Profile</span>
+                        </a>
+                        <a href="{{ url_for('auth.change_password') }}" class="bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-yellow-200 flex flex-col items-center justify-center">
+                            <span class="material-symbols-outlined mb-1">key</span>
+                            <span class="text-sm">Change Password</span>
+                        </a>
+                        <a href="{{ url_for('premium') }}" class="bg-green-100 text-green-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-green-200 flex flex-col items-center justify-center">
+                            <span class="material-symbols-outlined mb-1">star</span>
+                            <span class="text-sm">Premium</span>
+                        </a>
+                        <button class="bg-gray-100 text-gray-800 font-bold py-3 px-2 rounded-lg text-center hover:bg-gray-200 flex flex-col items-center justify-center" onclick="exportData()">
+                            <span class="material-symbols-outlined mb-1">download</span>
+                            <span class="text-sm">Export Data</span>
+                        </button>
+                    </div>
+                    <!-- Danger Zone -->
+                    <div class="mt-8 pt-6 border-t border-red-200">
+                        <h6 class="text-lg font-bold text-red-600 mb-4 flex items-center">
+                            <span class="material-symbols-outlined mr-3">warning</span>
+                            Danger Zone
+                        </h6>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button class="bg-yellow-500 text-white font-bold py-2 px-4 rounded-full hover:bg-yellow-600 flex items-center justify-center" onclick="deactivateAccount()">
+                                <span class="material-symbols-outlined mr-2">person_off</span>
+                                Deactivate Account
+                            </button>
+                            <button class="bg-red-500 text-white font-bold py-2 px-4 rounded-full hover:bg-red-600 flex items-center justify-center" onclick="deleteAccount()">
+                                <span class="material-symbols-outlined mr-2">delete_forever</span>
+                                Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function exportData() {
+    // In a real implementation, this would make an API call to export data
+    alert('Data export feature coming soon!');
+}
+
+function deactivateAccount() {
+    if (confirm('Are you sure you want to deactivate your account? This can be undone by contacting support.')) {
+        // In a real implementation, this would make an API call
+        alert('Account deactivation feature will be implemented soon.');
+    }
+}
+
+function deleteAccount() {
+    if (confirm('Are you sure you want to PERMANENTLY delete your account? This action CANNOT be undone.')) {
+        // In a real implementation, this would make an API call
+        alert('Account deletion feature will be implemented soon.');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+Dear {{ user.username }},
+
+Thank you for registering with MindCare Journal!
+
+Please click on the following link to verify your email address:
+{{ verify_link }}
+
+If you did not register for this service, please ignore this email.
+
+Thank you,
+The MindCare Team
