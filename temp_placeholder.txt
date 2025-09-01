@@ -1,1 +1,2 @@
 This is the initial content of the temporary placeholder file.
+This is the second line of content added in the feature branch.
